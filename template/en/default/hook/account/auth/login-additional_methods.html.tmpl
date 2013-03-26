@@ -1,0 +1,56 @@
+[%# The contents of this file are subject to the Mozilla Public
+  # License Version 1.1 (the "License"); you may not use this file
+  # except in compliance with the License. You may obtain a copy of
+  # the License at http://www.mozilla.org/MPL/
+  #
+  # Software distributed under the License is distributed on an "AS
+  # IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+  # implied. See the License for the specific language governing
+  # rights and limitations under the License.
+  #
+  # The Original Code is the OpenID Bugzilla Extension.
+  #
+  # Copyright (C) 2013 Miing.org. All Rights Reserved.
+  #
+  # Contributor(s):
+  #   Miing.org <samuel.miing@gmail.com>
+  #%]
+  
+[% IF Param('user_info_class').split(',').contains('OpenID') 
+	&& !Param('openid_sso_enabled') %]
+	<hr>
+  	<script type="text/javascript">
+	$(document).ready(function() {
+		openid.init('openid_identifier');
+	});
+	</script>
+	<form action="[% target FILTER html %]" method="POST" id="openid_form">
+		<fieldset>
+			<legend>Log in with <img src="extensions/OpenID/web/openid.png" width="32px" style="margin-bottom: -8px">OpenID</legend>
+			<div id="openid_choice">
+				<p>Please click your account provider:</p>
+				<div id="openid_btns"></div>
+			</div>
+			<div id="openid_input_area">
+				<input type="text" name="openid_identifier"  value="https://" id="openid_identifier">
+			</div>
+			[% IF Param('rememberlogin') == 'defaulton' || 
+				  Param('rememberlogin') == 'defaultoff' %]
+			  <tr>
+				<th>&nbsp;</th>
+				<td>
+				  <input type="checkbox" id="Bugzilla_remember" name="Bugzilla_remember" value="on"
+				         [%+ "checked" IF Param('rememberlogin') == "defaulton" %]>
+				  <label for="Bugzilla_remember">Remember my Login</label>
+				</td>
+			  </tr>
+			[% END %]
+			<noscript>
+				<p>OpenID is service that allows you to log-on to many different websites using a single indentity.
+				Find out <a href="http://openid.net/what/">more about OpenID</a> and <a href="http://openid.net/get/">how to get an OpenID enabled account</a>.</p>
+			</noscript>
+		</fieldset>
+		[% PROCESS "global/hidden-fields.html.tmpl"
+     	exclude="^(Bugzilla_(login|password|restrictlogin)|openid_identifier)$" %]
+	</form>
+[% END %]

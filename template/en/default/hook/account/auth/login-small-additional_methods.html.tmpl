@@ -1,0 +1,52 @@
+[%# The contents of this file are subject to the Mozilla Public
+  # License Version 1.1 (the "License"); you may not use this file
+  # except in compliance with the License. You may obtain a copy of
+  # the License at http://www.mozilla.org/MPL/
+  #
+  # Software distributed under the License is distributed on an "AS
+  # IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+  # implied. See the License for the specific language governing
+  # rights and limitations under the License.
+  #
+  # The Original Code is the OpenID Bugzilla Extension.
+  #
+  # Copyright (C) 2013 Miing.org. All Rights Reserved.
+  #
+  # Contributor(s):
+  #   Miing.org <samuel.miing@gmail.com>
+  #%]
+  
+[% IF Param('user_info_class').split(',').contains('OpenID') 
+	&& !Param('openid_sso_enabled') %]
+<li><span class="separator">| </span>
+  <a href=[% script_url FILTER html %]>Login with OpenID</a>
+</li>
+[% ELSE %]
+<script type="text/javascript">
+function createHidden(name, value, form) {
+  var field = document.createElement('input');
+  field.type = 'hidden';
+  field.name = name;
+  field.value = value;
+  form.appendChild(field);
+}
+      
+function openidLogin(opurl) {
+  var form = document.createElement('form');
+  form.action = '[% target FILTER html %]';
+  form.method = 'POST';
+		  
+  createHidden('openid_identifier', opurl, form);
+  createHidden('Bugzilla_remember', 'on', form);
+  createHidden('GoAheadAndLogIn', '1', form);
+		  
+  document.body.appendChild(form);
+  form.submit();
+  return true;
+}
+</script>
+
+<li><span class="separator">| </span>
+  <a href="javascript:openidLogin('[% Param('openid_sso_url') FILTER html %]')">Login with OpenID</a>
+</li>
+[% END %]

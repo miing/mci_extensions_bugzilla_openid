@@ -1,0 +1,49 @@
+[%# The contents of this file are subject to the Mozilla Public
+  # License Version 1.1 (the "License"); you may not use this file
+  # except in compliance with the License. You may obtain a copy of
+  # the License at http://www.mozilla.org/MPL/
+  #
+  # Software distributed under the License is distributed on an "AS
+  # IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+  # implied. See the License for the specific language governing
+  # rights and limitations under the License.
+  #
+  # The Original Code is the OpenID Bugzilla Extension.
+  #
+  # Copyright (C) 2013 Miing.org. All Rights Reserved.
+  #
+  # Contributor(s):
+  #   Miing.org <samuel.miing@gmail.com>
+  #%]
+
+[%# This is a list of all the possible code errors. Please keep them in
+  # alphabetical order by error tag, and leave a blank line between errors.
+  #
+  # Note that you must explicitly filter every single template variable
+  # in this file; if you do not wish to change it, use the "none" filter.
+  #%]
+
+[% IF error == "openid_response_error" %]
+  [% title = "OpenID Code Error" %]
+  [% errcode FILTER html %]
+  <hr>
+  [% errtext FILTER html %]
+  
+[% ELSIF error == "openid_request_error" %]
+  [% title = "OpenID Code Error" %]
+  [% errcode FILTER html %]
+  <hr>
+  [% errtext FILTER html %]
+
+[% ELSIF error == "openid_init_error" %]
+  [% title = "OpenID Init Error" %]
+  <code>Net::OpenID::Consumer</code> not yet installed.
+  
+[% ELSIF error == "openid_login_error" %]
+  [% title = "OpenID Login Error" %]
+  Data is missing from OpenID provider server response.
+  
+[% ELSIF error == "openid_userinfo_error" %]
+  [% title = "OpenID UserInfo Error" %]
+  OpenID provider can not provide user info like email address.
+[% END %]
