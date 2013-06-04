@@ -17,6 +17,7 @@
 # Contributor(s):
 #   Miing.org <samuel.miing@gmail.com>
 
+
 package Bugzilla::Extension::OpenID::Login;
 use strict;
 use base qw(Bugzilla::Auth::Login);

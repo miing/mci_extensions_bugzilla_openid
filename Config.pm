@@ -17,6 +17,7 @@
 # Contributor(s):
 #   Miing.org <samuel.miing@gmail.com>
 
+
 package Bugzilla::Extension::OpenID;
 use strict;
 
@@ -24,14 +25,19 @@ use constant NAME => 'OpenID';
 
 use constant REQUIRED_MODULES => [
     {
-        package => 'LWPx::ParanoidAgent',
-        module  => 'LWPx::ParanoidAgent',
-        version => 0.1.0,
+        package =>'Net::OpenID::Consumer',
+        module => 'Net::OpenID::Consumer',
+        version => 1.14,
     },
     {
-        package => 'Cache::File',
-        module  => 'Cache::File',
-        version => 0.1
+        package => 'LWPx::ParanoidAgent',
+        module  => 'LWPx::ParanoidAgent',
+        version => 1.09,
+    },
+    {
+        package => 'Cache::Cache',
+        module  => 'Cache::Cache',
+        version => 1.06
     }
 ];
 
