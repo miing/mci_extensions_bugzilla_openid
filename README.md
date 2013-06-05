@@ -27,7 +27,7 @@ make these modules installed first, as listed below:
 
  - Net::OpenID::Consumer
  - LWPx::ParanoidAgent
- - Cache::Cache
+ - Cache::FileCache
 
 For more information, take a look at http://search.cpan.org/.
 
