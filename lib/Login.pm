@@ -26,7 +26,7 @@ use Bugzilla::Constants;
 use Bugzilla::Util;
 use Bugzilla::Error;
 
-use Cache::File;
+use Cache::FileCache;
 use LWPx::ParanoidAgent;
 use Net::OpenID::Consumer;
 
