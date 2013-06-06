@@ -27,6 +27,7 @@ make these modules installed first, as listed below:
 
  - Net::OpenID::Consumer
  - LWPx::ParanoidAgent
+ - LWP::UserAgent
  - Cache::FileCache
 
 For more information, take a look at http://search.cpan.org/.
@@ -56,14 +57,19 @@ If you would like to get the way which is exactly called OpenID SSO, then follow
 
  - http://search.cpan.org/~wrog/Net-OpenID-Consumer-1.14/
  - http://search.cpan.org/~saxjazman/LWPx-ParanoidAgent/
+ - http://search.cpan.org/~gaas/libwww-perl-6.05/
  - http://search.cpan.org/~jswartz/Cache-Cache-1.06/
  - http://openid.net/developers/specs/
  - https://bugzilla.mozilla.org/show_bug.cgi?id=294608
  - http://openid.net/developers/libraries/
  - http://openid.net/add-openid/add-getting-started/
+ - http://openid.net/specs/openid-attribute-exchange-1_0.html
+ - http://www.lifewiki.net/openid/OpenIDSpecification
  - http://www.lifewiki.net/openid/OpenIDConsumers
  - https://wiki.mozilla.org/Bugzilla:OpenID_Auth_Plugin
  - http://www.lemoda.net/perl/openid/net-openid.html
+ - http://www.peterbe.com/plog/openid-attribute-exchange-sreg-and-google
+ - https://developers.google.com/accounts/docs/OpenID
  
  
 ***

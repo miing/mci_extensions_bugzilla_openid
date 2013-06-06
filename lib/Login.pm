@@ -27,6 +27,7 @@ use Bugzilla::Util;
 use Bugzilla::Error;
 
 use Cache::FileCache;
+use LWP::UserAgent;
 use LWPx::ParanoidAgent;
 use Net::OpenID::Consumer;
 
@@ -73,7 +74,6 @@ sub get_login_info {
         my $userinfo = _collect_openid_userinfo($openid_ret->{vident});
         $email = $userinfo->{email};
         $fullname = $userinfo->{fullname};
-        $nickname = $userinfo->{nickname};
     }
     
     # Check if all required user info exists there
@@ -88,7 +88,8 @@ sub get_login_info {
     
     # Put all user info altogether and try creating or updating the user
     my $login_data = {
-        'username' => $email
+        'username' => $email,
+        'realname' => $fullname,
     };
     my $result = Bugzilla::Auth::Verify->create_or_update_user($login_data);
     return $result if $result->{'failure'};
@@ -148,7 +149,7 @@ sub _openid_provider_login {
     my $consumer_secret = sub { sprintf($nonce_pattern, shift^0xCAFEFEED) };
     my $urlbase = correct_urlbase();
     my $required_root = $urlbase;
-    my $return_to = $urlbase . "index.cgi?GoAheadAndLogIn=1\&openid_identifier=$opurl";
+    my $return_to = $urlbase . "/index.cgi?GoAheadAndLogIn=1\&openid_identifier=$opurl";
     my $trust_root = $urlbase;
     
     # Here we at first would like to try resolving response from this OpenID provider
@@ -158,6 +159,8 @@ sub _openid_provider_login {
         #ThrowCodeError('openid.mode=' . $openid_p{mode});
         # found OpenID parameters so process response from OpenID provider
 		my $csr = Net::OpenID::Consumer->new(
+            #ua => LWPx::ParanoidAgent->new,
+            ua => LWP::UserAgent->new,
 			#cache => $cache,
 			args  => $cgi,
 			consumer_secret => $consumer_secret,
@@ -179,7 +182,7 @@ sub _openid_provider_login {
 				
 			# OpenID request failed, requiring user to perform setup.
 			# In this case, automatically redirect user to OpenID provider.
-			ThrowCodeError('setup.' . $setup_url);
+			#ThrowCodeError('setup.' . $setup_url);
 		    print $cgi->redirect($setup_url);
 		    $result{redirected} = 1;
 		}
@@ -206,7 +209,7 @@ sub _openid_provider_login {
 		    
 		    # Up until this point, login successfully
 		    $result{vident} = $vident;
-		    ThrowCodeError('result{vident}=' . $result{vident});
+		    #ThrowCodeError('result{vident}=' . $result{vident});
 		}
 		else {
 		    # security: don't pass through sensitive info
@@ -224,7 +227,8 @@ sub _openid_provider_login {
 	    # Submit a request from OpenID enabled site into OpenID provider, 
 	    # if there are no any responses arriving here.
 	    my $csr = Net::OpenID::Consumer->new(
-	        ua => LWPx::ParanoidAgent->new,
+	        #ua => LWPx::ParanoidAgent->new,
+            ua => LWP::UserAgent->new,
 			#cache => $cache,
 			args => $cgi,
 			consumer_secret => $consumer_secret,
@@ -244,33 +248,29 @@ sub _openid_provider_login {
 		# redirect to the OpenID provider that have already been found there
 		# to eventually perform authentication.
 		my $cident = $csr->claimed_identity($opurl);
+        #ThrowCodeError('cident=' . $cident);
         if (defined $cident) {
-            my $version = $cident->protocol_version;
-            if ($version == 2) {
-                #ThrowCodeError('version=' . $version);
-                # OpenID version 2.0 with AX (Attribute Exchange)
-                $cident->set_extension_args(
-                    'http://openid.net/srv/ax/1.0',
-                    {
-                        mode => 'fetch_request',
-                        #required => 'email',
-                        required => 'email, firstname, lastname',
-                        'type.email' => 'http://axschema.org/contact/email',
-                        'type.firstname' => 'http://axschema.org/namePerson/first',
-                        'type.lastname' => 'http://axschema.org/namePerson/last',
-                    },
-                );
-            }
-            else {
-                # OpenID version 1.1 with SREG (Simple Registration) 
-                $cident->set_extension_args(
-                    'http://openid.net/extensions/sreg/1.1',
-                    {
-                        required => 'email',
-                        optional => 'fullname, nickname',
-                    },
-                );
-            }
+            # OpenID version 2.0 with AX (Attribute Exchange)
+#            $cident->set_extension_args(
+#                'http://openid.net/srv/ax/1.0',
+#                {
+#                    mode => 'fetch_request',
+#                    required => 'email, firstname, lastname',
+#                    'type.email' => 'http://axschema.org/contact/email',
+#                    'type.firstname' => 'http://axschema.org/namePerson/first',
+#                    'type.lastname' => 'http://axschema.org/namePerson/last',
+#                },
+#            );
+
+            # OpenID version 1.1 with SREG (Simple Registration) 
+            $cident->set_extension_args(
+                'http://openid.net/extensions/sreg/1.1',
+                {
+                    required => 'email',
+                    optional => 'fullname',
+                },
+            );
+
             my $check_url = $cident->check_url(
                 # The place we go back to
                 return_to => $return_to,
@@ -344,7 +344,6 @@ sub _collect_openid_userinfo {
 		# OpenID 1.1 SREG (Simple REGistration)
 		$result{email} = $sreg->{email};
 		$result{fullname} = $sreg->{fullname};
-		$result{nickname} = $sreg->{nickname};
 	}
 	return \%result;
 }

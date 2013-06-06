@@ -25,8 +25,8 @@ use constant NAME => 'OpenID';
 
 use constant REQUIRED_MODULES => [
     {
-        package =>'Net::OpenID::Consumer',
-        module => 'Net::OpenID::Consumer',
+        package => 'Net::OpenID::Consumer',
+        module  => 'Net::OpenID::Consumer',
         version => 1.14,
     },
     {
@@ -35,10 +35,15 @@ use constant REQUIRED_MODULES => [
         version => 1.09,
     },
     {
+        package => 'LWP::UserAgent',
+        module  => 'LWP::UserAgent',
+        version => 6.05,
+    },
+    {
         package => 'Cache::Cache',
         module  => 'Cache::Cache',
-        version => 1.06
-    }
+        version => 1.06,
+    },
 ];
 
 use constant OPTIONAL_MODULES => [
